@@ -11,7 +11,7 @@ from telebot import types
 logging.basicConfig(level = logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-token = '1419645479:AAEr7zrbKJ_ZUdlPB_Y2vIvCaK4KtT704k0'
+token = os.environ.get('TOKEN')
 
 bot = telebot.TeleBot(token)
 
