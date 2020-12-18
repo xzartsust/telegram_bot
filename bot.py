@@ -49,18 +49,20 @@ def send_request(message):
         data = time.ctime(message.date)
         
         #поміняти айди чата на той який буде
-        delete = bot.send_message(-1001438428804, f''' 
+        if message.chat.id != -1001438428804:
+            delete = bot.send_message(-1001438428804, f''' 
         Запрос на вступелния в групу от пользователя @{message.from_user.username}
 
     ID: {message.from_user.id}
     Name: {message.from_user.first_name}
     Дата запроса: {data}
 
-    На голосование 20 мин.
-    После 20 мин это сообщения удалится, успейте проголосовать!!!
+На голосование 20 мин.
+После 20 мин это сообщения удалится, успейте проголосовать!!!
         ''', # змітини потом в Timer час на той який скажуть так само в описі поставити
-        reply_markup = markup_inline
-            )
+            reply_markup = markup_inline
+                )
+
         if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
             bot.send_message(message.chat.id, '''
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
@@ -86,8 +88,8 @@ def callback_inline(call):
     elif call.data == 'no':
         no.update({'no': no['no'] + 1})
     
-    print('Y', yes)
-    print('N', no)
+    #print('Y', yes)
+    #print('N', no)
 
 def check():
     try:
