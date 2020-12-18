@@ -15,7 +15,7 @@ token = os.environ.get('TOKEN')
 
 bot = telebot.TeleBot('1419645479:AAEr7zrbKJ_ZUdlPB_Y2vIvCaK4KtT704k0')
 
-@bot.message_handler(commands = ['start', 'старт'], content_types = ['text'])
+@bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
     
     if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
@@ -79,6 +79,7 @@ no = {'no': 0}
 
 @bot.callback_query_handler(func = lambda call: True)
 def callback_inline(call):
+    
     if call.data == 'yes':
         yes.update({'yes': yes['yes'] + 1})
 
@@ -114,6 +115,7 @@ def check():
         
             bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
             bot.send_message(user_id, 'Голосующие не приняли единое мнение, попробуйте еще раз направить запрос')
+    
     except Exception as e:
         print(f'Ошибка в check: {e}')
         
