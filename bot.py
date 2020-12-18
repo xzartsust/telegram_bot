@@ -93,7 +93,7 @@ def check():
     try:
         if yes['yes'] > no['no']:
         
-            bot.send_message(user_id, f'Поздравляем, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/JNaUCFW8roRlP7to1nfM5A')
+            bot.send_message(user_id, f'🎉 Поздравляем 🎉, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/JNaUCFW8roRlP7to1nfM5A')
             bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
