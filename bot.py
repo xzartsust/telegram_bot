@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 token = os.environ.get('TOKEN')
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot('1419645479:AAEr7zrbKJ_ZUdlPB_Y2vIvCaK4KtT704k0')
 
-@bot.message_handler(commands = ['start'], content_types = ['text'])
+@bot.message_handler(commands = ['start', 'старт'], content_types = ['text'])
 def send_welcome(message):
-    print(message.chat.id)
+    
     if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
         bot.send_message(message.chat.id, '''
         Привет! Напиши команду /request что бы подать заявку на вступления 
@@ -25,45 +25,51 @@ def send_welcome(message):
 
 @bot.message_handler(commands = ['admin'])
 def admin(message):
+    
     if message.from_user.id == 618042376:
-        print(message.chat)
+        print(f'\nMessage.chat: {message.chat}\n')
+        print(f'Message: {message}\n')
     else:
         bot.send_message(message.chat.id, "Эту команду может использовать только создатель")
 
-@bot.message_handler(commands = ['request'])
+@bot.message_handler(commands = ['request', 'Запрос', 'запрос'])
 def send_request(message):
     
     global user_id
     global delete
-    user_id = message.from_user.id
+    
+    try:
+        user_id = message.from_user.id
 
+        markup_inline = types.InlineKeyboardMarkup()
+        item_yes = types.InlineKeyboardButton(text = 'Принять', callback_data = 'yes')
+        item_no = types.InlineKeyboardButton(text = 'Отказать', callback_data = 'no')
+        markup_inline.add(item_yes, item_no)
 
-
-    markup_inline = types.InlineKeyboardMarkup()
-    item_yes = types.InlineKeyboardButton(text = 'Принять', callback_data = 'yes')
-    item_no = types.InlineKeyboardButton(text = 'Отказать', callback_data = 'no')
-    markup_inline.add(item_yes, item_no)
-
-    data = time.ctime(message.date)
+        data = time.ctime(message.date)
         
         #поміняти айди чата на той який буде
-    delete = bot.send_message(-1001438428804, f''' 
-    Запрос на вступелния в групу от пользователя @{message.from_user.username}
+        delete = bot.send_message(-1001438428804, f''' 
+        Запрос на вступелния в групу от пользователя @{message.from_user.username}
 
-ID: {message.from_user.id}
-Name: {message.from_user.first_name}
-Дата запроса: {data}
+    ID: {message.from_user.id}
+    Name: {message.from_user.first_name}
+    Дата запроса: {data}
 
-На голосование 20 мин.
-    ''', 
-    reply_markup = markup_inline
-        )
-    if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
-        bot.send_message(message.chat.id, '''
-        Заявка на вступления была направлена на рассмотрение. Ожидайте!
-        ''')
+    На голосование 20 мин.
+    После 20 мин это сообщения удалится, успейте проголосовать!!!
+        ''', # змітини потом в Timer час на той який скажуть так само в описі поставити
+        reply_markup = markup_inline
+            )
+        if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
+            bot.send_message(message.chat.id, '''
+            Заявка на вступления была направлена на рассмотрение. Ожидайте!
+            ''')
     
-    Timer(10, check).start()
+        Timer(10, check).start()
+    
+    except Exception as e:
+        bot.send_message(618042376, f'Ошибка в send_request: {e}')
     
     #bot.send_message(-1001438428804, "Вы уже отправили запрос, ждите!")
     #print('Mass users:', users)
@@ -83,38 +89,33 @@ def callback_inline(call):
     print('N', no)
 
 def check():
+    try:
+        if yes['yes'] > no['no']:
+        
+            bot.send_message(user_id, f'Поздравляем, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/JNaUCFW8roRlP7to1nfM5A')
+            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+        
+            yes.clear()
+            no.clear()
+            yes.update({'yes': 0})
+            no.update({'no': 0})
     
-    if yes['yes'] > no['no']:
+        elif yes['yes'] < no['no']:
         
-        bot.send_message(user_id, f'Поздравляем, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/JNaUCFW8roRlP7to1nfM5A')
-        bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.send_message(user_id, 'Ех... Вам отказали')
+            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
         
-        yes.clear()
-        no.clear()
-        yes.update({'yes': 0})
-        no.update({'no': 0})
-
-        print('Y', yes)
-        print('N', no)
+            yes.clear()
+            no.clear()
+            yes.update({'yes': 0})
+            no.update({'no': 0})
     
-    elif yes['yes'] < no['no']:
+        elif yes['yes'] == no['no']:
         
-        bot.send_message(user_id, 'Ех... Вам отказали')
-        bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
-        
-        yes.clear()
-        no.clear()
-        yes.update({'yes': 0})
-        no.update({'no': 0})
-
-        print('Y', yes)
-        print('N', no)
-    
-    elif yes['yes'] == no['no']:
-        
-        bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
-        bot.send_message(user_id, 'Голосующие не приняли единое мнение, попробуйте еще раз направить запрос')
-    
+            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.send_message(user_id, 'Голосующие не приняли единое мнение, попробуйте еще раз направить запрос')
+    except Exception as e:
+        print(f'Ошибка в check: {e}')
         
 
 if __name__ == "__main__":
