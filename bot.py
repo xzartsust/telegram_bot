@@ -26,7 +26,7 @@ def send_welcome(message):
 @bot.message_handler(commands = ['admin'])
 def admin(message):
     if message.from_user.id == 618042376:
-        print(message)
+        print(message.chat)
     else:
         bot.send_message(message.chat.id, "Эту команду может использовать только создатель")
 
