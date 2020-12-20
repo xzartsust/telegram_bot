@@ -87,11 +87,6 @@ def send_request(message):
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
     
-    finally:
-        if(conn):
-            cursor.close()
-            conn.close()
-    
     #bot.send_message(-1001438428804, "Вы уже отправили запрос, ждите!")
     #print('Mass users:', users)
     
@@ -137,23 +132,18 @@ def check():
             bot.delete_message(-1001366701849, message_id = delete.id) 
             bot.send_message(user_id, 'Міша, всьо хуйня, давай поновой')
             
-            try:
-                conn = psycopg2.connect(
-                    database = f"{database}",
-                    user = f"{user}",
-                    password = f"{password}",
-                    host = f"{host}",
-                    port = f"{port}"
-                )
+            conn = psycopg2.connect(
+                database = f"{database}",
+                user = f"{user}",
+                password = f"{password}",
+                host = f"{host}",
+                port = f"{port}"
+            )
 
-                cursor = conn.cursor()
+            cursor = conn.cursor()
 
-                cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
-                conn.commit()
-            finally:
-                if(conn):
-                    cursor.close()
-                    conn.close()
+            cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
+            conn.commit()
     
     except Exception as e:
         print(f'Ошибка в check: {e}')
