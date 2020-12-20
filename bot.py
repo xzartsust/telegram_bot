@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 token = os.environ.get('TOKEN')
 
-bot = telebot.TeleBot('1360564444:AAHwAIgojOk0C4OZ4M_aX7iJAlfjtZab3hU')
+bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
@@ -63,7 +63,7 @@ def send_request(message):
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
             ''')
     
-        Timer(10, check).start()
+        Timer(600, check).start()
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
