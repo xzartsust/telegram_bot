@@ -42,24 +42,19 @@ def send_request(message):
         user_id = message.from_user.id
 
         markup_inline = types.InlineKeyboardMarkup()
-        item_yes = types.InlineKeyboardButton(text = 'Принять', callback_data = 'yes')
-        item_no = types.InlineKeyboardButton(text = 'Отказать', callback_data = 'no')
+        item_yes = types.InlineKeyboardButton(text = 'Хай буде', callback_data = 'yes')
+        item_no = types.InlineKeyboardButton(text = 'Пашол нахуй', callback_data = 'no')
         markup_inline.add(item_yes, item_no)
-
-        data = time.ctime(message.date)
         
         #поміняти айди чата на той який буде
         if message.chat.id != -1001366701849:
             delete = bot.send_message(-1001366701849, f''' 
-        Запрос на вступелния в групу от пользователя @{message.from_user.username}
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
 
-    ID: {message.from_user.id}
-    Name: {message.from_user.first_name}
-    Дата запроса: {data}
+    Поганяло: {message.from_user.first_name}
 
-На голосование 15 мин.
-После 15 мин это сообщения удалится, успейте проголосовать!!!
-        ''', # змітини потом в Timer час на той який скажуть так само в описі поставити
+На роздуплення 10 хв.
+''', # змітини потом в Timer час на той який скажуть так само в описі поставити
             reply_markup = markup_inline
                 )
 
@@ -68,7 +63,7 @@ def send_request(message):
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
             ''')
     
-        Timer(5, check).start()
+        Timer(10, check).start()
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
@@ -95,7 +90,7 @@ def check():
     try:
         if yes['yes'] > no['no']:
         
-            bot.send_message(user_id, f'🎉 Поздравляем 🎉, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ')
+            bot.send_message(user_id, f'🎉 Вітаю 🎉\nБагато не вийобуйся бо кікнемо 🤡🤡🤡\nПроявляйте актив.\n\nhttps://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ')
             bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
@@ -105,7 +100,7 @@ def check():
     
         elif yes['yes'] < no['no']:
         
-            bot.send_message(user_id, 'Ех... Вам отказали')
+            bot.send_message(user_id, 'Ех... Ви пішли нахуй!!!')
             bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
@@ -116,7 +111,7 @@ def check():
         elif yes['yes'] == no['no']:
         
             bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
-            bot.send_message(user_id, 'Голосующие не приняли единое мнение, попробуйте еще раз направить запрос')
+            bot.send_message(user_id, 'Міша, всьо хуйня, давай поновой')
     
     except Exception as e:
         print(f'Ошибка в check: {e}')
