@@ -17,11 +17,25 @@ token = os.environ.get('TOKEN')
 
 bot = telebot.TeleBot(token)
 
+#####################################
+
 database = os.environ.get('DATABASE')
 user = os.environ.get('USER')
 password = os.environ.get('PASSWORD')
 host = os.environ.get('HOST')
 port = os.environ.get('PORT')
+
+conn = psycopg2.connect(
+    database = f"{database}", 
+    user = f"{user}", 
+    password = f"{password}", 
+    host = f"{host}", 
+    port = f"{port}"
+)
+
+cursor = conn.cursor()
+
+#####################################
 
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
@@ -50,16 +64,6 @@ def send_request(message):
         
         user_id = message.from_user.id
 
-        conn = psycopg2.connect(
-            database = f"{database}", 
-            user = f"{user}", 
-            password = f"{password}", 
-            host = f"{host}", 
-            port = f"{port}"
-        )
-
-        cursor = conn.cursor()
-
         cursor.execute(f'SELECT user_id FROM public."main_BD" WHERE user_id = \'{user_id}\';')
         userinbd = cursor.fetchone()
         conn.commit()
@@ -80,7 +84,9 @@ def send_request(message):
 
             bot.send_message(message.chat.id, '''Заявка на вступления была направлена на рассмотрение. Ожидайте!''')
             Timer(600, check).start()
-        
+
+            cursor.execute(f'INSERT INTO public."main_BD"(user_id) VALUES (\'{user_id}\');')
+            conn.commit()
         else:
             bot.send_message(message.chat.id, 'Ви вже відправили запрос!!!')
     
@@ -131,16 +137,6 @@ def check():
         
             bot.delete_message(-1001366701849, message_id = delete.id) 
             bot.send_message(user_id, 'Міша, всьо хуйня, давай поновой')
-            
-            conn = psycopg2.connect(
-                database = f"{database}",
-                user = f"{user}",
-                password = f"{password}",
-                host = f"{host}",
-                port = f"{port}"
-            )
-
-            cursor = conn.cursor()
 
             cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
             conn.commit()
