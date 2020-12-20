@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 token = os.environ.get('TOKEN')
 
-bot = telebot.TeleBot('1419645479:AAEr7zrbKJ_ZUdlPB_Y2vIvCaK4KtT704k0')
+bot = telebot.TeleBot('1360564444:AAHwAIgojOk0C4OZ4M_aX7iJAlfjtZab3hU')
 
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
     
-    if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
+    if message.chat.id != -1001366701849: #поміняти айди чата на той який буде 
         bot.send_message(message.chat.id, '''
         Привет! Напиши команду /request что бы подать заявку на вступления 
         ''')
@@ -49,26 +49,26 @@ def send_request(message):
         data = time.ctime(message.date)
         
         #поміняти айди чата на той який буде
-        if message.chat.id != -1001438428804:
-            delete = bot.send_message(-1001438428804, f''' 
+        if message.chat.id != -1001366701849:
+            delete = bot.send_message(-1001366701849, f''' 
         Запрос на вступелния в групу от пользователя @{message.from_user.username}
 
     ID: {message.from_user.id}
     Name: {message.from_user.first_name}
     Дата запроса: {data}
 
-На голосование 20 мин.
-После 20 мин это сообщения удалится, успейте проголосовать!!!
+На голосование 15 мин.
+После 15 мин это сообщения удалится, успейте проголосовать!!!
         ''', # змітини потом в Timer час на той який скажуть так само в описі поставити
             reply_markup = markup_inline
                 )
 
-        if message.chat.id != -1001438428804: #поміняти айди чата на той який буде 
+        if message.chat.id != -1001366701849: #поміняти айди чата на той який буде 
             bot.send_message(message.chat.id, '''
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
             ''')
     
-        Timer(10, check).start()
+        Timer(5, check).start()
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
@@ -95,8 +95,8 @@ def check():
     try:
         if yes['yes'] > no['no']:
         
-            bot.send_message(user_id, f'🎉 Поздравляем 🎉, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/JNaUCFW8roRlP7to1nfM5A')
-            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.send_message(user_id, f'🎉 Поздравляем 🎉, Вас приняли в группу, вот ваша ссылка на присоидинения:\n\nhttps://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ')
+            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
             no.clear()
@@ -106,7 +106,7 @@ def check():
         elif yes['yes'] < no['no']:
         
             bot.send_message(user_id, 'Ех... Вам отказали')
-            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
             no.clear()
@@ -115,7 +115,7 @@ def check():
     
         elif yes['yes'] == no['no']:
         
-            bot.delete_message(-1001438428804, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
             bot.send_message(user_id, 'Голосующие не приняли единое мнение, попробуйте еще раз направить запрос')
     
     except Exception as e:
