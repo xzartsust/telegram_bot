@@ -4,6 +4,8 @@ import os
 import time
 from threading import Timer
 
+import asyncpg
+import psycopg2
 import telebot
 from prettyprinter import pprint
 from telebot import types
@@ -15,6 +17,22 @@ token = os.environ.get('TOKEN')
 
 bot = telebot.TeleBot(token)
 
+database = os.environ.get('DATABASE')
+user = os.environ.get('USER')
+password = os.environ.get('PASSWORD')
+host = os.environ.get('HOST')
+port = os.environ.get('PORT')
+'''
+conn = psycopg2.connect(
+    database = f"{database}", 
+    user = f"{user}", 
+    password = f"{password}", 
+    host = f"{host}", 
+    port = "5432"
+)
+
+cursor = conn.cursor()
+'''
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
     
