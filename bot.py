@@ -90,7 +90,7 @@ def check():
     try:
         if yes['yes'] > no['no']:
         
-            bot.send_message(user_id, f'🎉 Вітаю 🎉\nБагато не вийобуйся бо кікнемо 🤡🤡🤡\nПроявляйте актив.\n\nhttps://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ')
+            bot.send_message(user_id, f'🎉 Вітаю 🎉\nБагато не вийобуйся бо кікнемо 🤡🤡🤡\nПроявляйте актив.\n\n[Тикай сюда долбоеб](https://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ)', parse_mode = 'Markdown')
             bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
         
             yes.clear()
