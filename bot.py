@@ -17,6 +17,8 @@ token = os.environ.get('TOKEN')
 
 bot = telebot.TeleBot(token)
 
+#####################################
+
 database = os.environ.get('DATABASE')
 user = os.environ.get('USER')
 password = os.environ.get('PASSWORD')
@@ -28,10 +30,12 @@ conn = psycopg2.connect(
     user = f"{user}", 
     password = f"{password}", 
     host = f"{host}", 
-    port = "5432"
+    port = f"{port}"
 )
 
 cursor = conn.cursor()
+
+#####################################
 
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
@@ -57,7 +61,12 @@ def send_request(message):
     global delete
     
     try:
+        
         user_id = message.from_user.id
+
+        cursor.execute(f'SELECT user_id FROM public."main_BD" WHERE user_id = \'{user_id}\';')
+        userinbd = cursor.fetchone()
+        conn.commit()
 
         markup_inline = types.InlineKeyboardMarkup()
         item_yes = types.InlineKeyboardButton(text = 'Хай буде', callback_data = 'yes')
@@ -65,23 +74,21 @@ def send_request(message):
         markup_inline.add(item_yes, item_no)
         
         #поміняти айди чата на той який буде
-        if message.chat.id != -1001366701849:
+        if message.chat.id != -1001366701849 and userinbd[0] is None:
             delete = bot.send_message(-1001366701849, f''' 
         Запрос на вступ в групу від чмиря @{message.from_user.username}
 
     Поганяло: {message.from_user.first_name}
 
-На роздуплення 10 хв.
-''', # змітини потом в Timer час на той який скажуть так само в описі поставити
-            reply_markup = markup_inline
-                )
+На роздуплення 10 хв.''', reply_markup = markup_inline)
 
-        if message.chat.id != -1001366701849: #поміняти айди чата на той який буде 
-            bot.send_message(message.chat.id, '''
-            Заявка на вступления была направлена на рассмотрение. Ожидайте!
-            ''')
-    
-        Timer(600, check).start()
+            bot.send_message(message.chat.id, '''Заявка на вступления была направлена на рассмотрение. Ожидайте!''')
+            Timer(600, check).start()
+
+            cursor.execute(f'INSERT INTO public."main_BD"(user_id) VALUES (\'{user_id}\');')
+            conn.commit()
+        else:
+            bot.send_message(message.chat.id, 'Ви вже відправили запрос!!!')
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
@@ -109,7 +116,7 @@ def check():
         if yes['yes'] > no['no']:
         
             bot.send_message(user_id, f'🎉 Вітаю 🎉\nБагато не вийобуйся бо кікнемо 🤡🤡🤡\nПроявляйте актив.\n\n[Тикай сюда долбоеб](https://t.me/joinchat/KkYqCRiVvkdluMTmPY7kIQ)', parse_mode = 'Markdown')
-            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.delete_message(-1001366701849, message_id = delete.id)
         
             yes.clear()
             no.clear()
@@ -119,7 +126,7 @@ def check():
         elif yes['yes'] < no['no']:
         
             bot.send_message(user_id, 'Ех... Ви пішли нахуй!!!')
-            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.delete_message(-1001366701849, message_id = delete.id)
         
             yes.clear()
             no.clear()
@@ -128,8 +135,11 @@ def check():
     
         elif yes['yes'] == no['no']:
         
-            bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
+            bot.delete_message(-1001366701849, message_id = delete.id) 
             bot.send_message(user_id, 'Міша, всьо хуйня, давай поновой')
+
+            cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
+            conn.commit()
     
     except Exception as e:
         print(f'Ошибка в check: {e}')
