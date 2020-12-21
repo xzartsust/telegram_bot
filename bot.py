@@ -22,7 +22,7 @@ user = os.environ.get('USER')
 password = os.environ.get('PASSWORD')
 host = os.environ.get('HOST')
 port = os.environ.get('PORT')
-'''
+
 conn = psycopg2.connect(
     database = f"{database}", 
     user = f"{user}", 
@@ -32,7 +32,7 @@ conn = psycopg2.connect(
 )
 
 cursor = conn.cursor()
-'''
+
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
     
