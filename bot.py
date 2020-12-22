@@ -55,7 +55,7 @@ def admin(message):
 
 def create_button(text1, text2):
     button = types.InlineKeyboardMarkup()
-    button.add(types.InlineKeyboardButton(text = text1, callback_data = 'yes'), types.InlineKeyboardButton(text = text2, callback_data = 'no')))
+    button.add(types.InlineKeyboardButton(text = text1, callback_data = 'yes'), types.InlineKeyboardButton(text = text2, callback_data = 'no'))
     return button
 
 @bot.message_handler(commands = ['request', 'Запрос', 'запрос'])
@@ -108,9 +108,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{message.from_user.username}
+        Запрос на вступ в групу від чмиря @{call.message.from_user.username}
 
-    Поганяло: {message.from_user.first_name}
+    Поганяло: {call.message.from_user.first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
@@ -126,9 +126,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{message.from_user.username}
+        Запрос на вступ в групу від чмиря @{call.message.from_user.username}
 
-    Поганяло: {message.from_user.first_name}
+    Поганяло: {call.message.from_user.first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'),
