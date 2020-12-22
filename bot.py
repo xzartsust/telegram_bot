@@ -114,7 +114,7 @@ def callback_inline(call):
             text = f''' 
         Запрос на вступ в групу від чмиря @{user_username}
 
-    Поганяло: {user_username}
+    Поганяло: {user_first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
@@ -130,9 +130,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{call.message.from_user.username}
+        Запрос на вступ в групу від чмиря @{user_username}
 
-    Поганяло: {call.message.from_user.first_name}
+    Поганяло: {user_first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'),
