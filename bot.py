@@ -63,14 +63,12 @@ def send_request(message):
     
     global user_id
     global delete
-    global user_username
-    global user_first_name
+    global user
     
     try:
 
         user_id = message.from_user.id
-        user_username = message.from_user.username
-        user_first_name = message.from_user.first_name
+        user = message.from_user
         
         cursor.execute(f'SELECT user_id FROM public."main_BD" WHERE user_id = \'{user_id}\';')
         userinbd = cursor.fetchone()
@@ -112,9 +110,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{user_username}
+        Запрос на вступ в групу від чмиря @{user.username}
 
-    Поганяло: {user_first_name}
+    Поганяло: {user.first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
@@ -130,9 +128,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{user_username}
+        Запрос на вступ в групу від чмиря @{user.username}
 
-    Поганяло: {user_first_name}
+    Поганяло: {user.first_name}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'),
