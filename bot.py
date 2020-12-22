@@ -63,10 +63,14 @@ def send_request(message):
     
     global user_id
     global delete
+    global user_username
+    global user_first_name
     
     try:
 
         user_id = message.from_user.id
+        user_username = message.from_user.username
+        user_first_name = message.from_user.first_name
         
         cursor.execute(f'SELECT user_id FROM public."main_BD" WHERE user_id = \'{user_id}\';')
         userinbd = cursor.fetchone()
@@ -108,9 +112,9 @@ def callback_inline(call):
             chat_id = call.message.chat.id,
             message_id = call.message.message_id,
             text = f''' 
-        Запрос на вступ в групу від чмиря @{call.message.from_user.username}
+        Запрос на вступ в групу від чмиря @{user_username}
 
-    Поганяло: {call.message.from_user.first_name}
+    Поганяло: {user_username}
 
 На роздуплення 10 хв.''',
             reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
@@ -169,7 +173,7 @@ def check():
             yes.update({'yes': 0})
             no.update({'no': 0})
             
-            cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
+            cursor.execute(f'DELETE FROM public."main_BD" WHERE user_id = \'{user_id}\';')
             conn.commit()
     
     except Exception as e:
