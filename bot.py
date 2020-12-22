@@ -115,8 +115,7 @@ def callback_inline(call):
     Поганяло: {user_data.first_name}
 
 На роздуплення 10 хв.''',
-            reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
-            parse_mode = 'Markdown')
+            reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
         
 
     elif call.data == 'no':
@@ -133,8 +132,7 @@ def callback_inline(call):
     Поганяло: {user_data.first_name}
 
 На роздуплення 10 хв.''',
-            reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'),
-            parse_mode = 'Markdown')
+            reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
     
     #print('Y', yes)
     #print('N', no)
