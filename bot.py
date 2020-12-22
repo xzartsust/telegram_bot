@@ -33,6 +33,9 @@ conn = psycopg2.connect(
 
 cursor = conn.cursor()
 
+yes = {'yes': 0}
+no = {'no': 0}
+
 @bot.message_handler(commands = ['start', 'старт', 'Старт'], content_types = ['text'])
 def send_welcome(message):
     
@@ -50,6 +53,11 @@ def admin(message):
     else:
         bot.send_message(message.chat.id, "Эту команду может использовать только создатель")
 
+def create_button(text1, text2):
+    button = types.InlineKeyboardMarkup()
+    button.add(types.InlineKeyboardButton(text = text1, callback_data = 'yes'), types.InlineKeyboardButton(text = text2, callback_data = 'no')))
+    return button
+
 @bot.message_handler(commands = ['request', 'Запрос', 'запрос'])
 def send_request(message):
     
@@ -64,11 +72,6 @@ def send_request(message):
         userinbd = cursor.fetchone()
         conn.commit()
 
-        markup_inline = types.InlineKeyboardMarkup()
-        item_yes = types.InlineKeyboardButton(text = 'Хай буде', callback_data = 'yes')
-        item_no = types.InlineKeyboardButton(text = 'Пашол нахуй', callback_data = 'no')
-        markup_inline.add(item_yes, item_no)
-        
         #поміняти айди чата на той який буде
         if message.chat.id != -1001366701849 and userinbd is None:
             delete = bot.send_message(-1001366701849, f''' 
@@ -76,7 +79,7 @@ def send_request(message):
 
     Поганяло: {message.from_user.first_name}
 
-На роздуплення 10 хв.''', reply_markup = markup_inline)
+На роздуплення 10 хв.''', reply_markup = create_button('Хай буде','Пашол нахуй'))
 
             bot.send_message(message.chat.id, '''
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
@@ -92,20 +95,44 @@ def send_request(message):
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
     
-    #bot.send_message(-1001438428804, "Вы уже отправили запрос, ждите!")
-    #print('Mass users:', users)
-    
-yes = {'yes': 0}
-no = {'no': 0}
 
 @bot.callback_query_handler(func = lambda call: True)
 def callback_inline(call):
     
     if call.data == 'yes':
         yes.update({'yes': yes['yes'] + 1})
+        y1 = yes['yes']
+        n1 = no['no']
+        
+        bot.edit_message_text(
+            chat_id = call.message.chat.id,
+            message_id = call.message.message_id,
+            text = f''' 
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
+
+    Поганяло: {message.from_user.first_name}
+
+На роздуплення 10 хв.''',
+            reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'),
+            parse_mode = 'Markdown')
+        
 
     elif call.data == 'no':
         no.update({'no': no['no'] + 1})
+        y2 = yes['yes']
+        n2 = no['no']
+
+        bot.edit_message_text(
+            chat_id = call.message.chat.id,
+            message_id = call.message.message_id,
+            text = f''' 
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
+
+    Поганяло: {message.from_user.first_name}
+
+На роздуплення 10 хв.''',
+            reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'),
+            parse_mode = 'Markdown')
     
     #print('Y', yes)
     #print('N', no)
@@ -136,6 +163,11 @@ def check():
         
             bot.delete_message(-1001366701849, message_id = delete.id) #поміняти айди чата на той який буде 
             bot.send_message(user_id, 'Міша, всьо хуйня, давай поновой')
+            
+            yes.clear()
+            no.clear()
+            yes.update({'yes': 0})
+            no.update({'no': 0})
             
             cursor.execute(f'DELETE FROM public."main_BD" WHERE \'{user_id}\';')
             conn.commit()
