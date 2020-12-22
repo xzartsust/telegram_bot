@@ -64,11 +64,11 @@ def send_request(message):
     global user_id
     global delete
     global user_data
-    
-    try:
 
-        user_id = message.from_user.id
-        user_data = message.from_user
+    user_id = message.from_user.id
+    user_data = message.from_user
+
+    try:
         
         cursor.execute(f'SELECT user_id FROM public."main_BD" WHERE user_id = \'{user_id}\';')
         userinbd = cursor.fetchone()
