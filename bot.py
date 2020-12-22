@@ -100,7 +100,9 @@ def send_request(message):
 
 @bot.callback_query_handler(func = lambda call: True)
 def callback_inline(call):
-    
+
+    global user_data
+
     if call.data == 'yes':
         yes.update({'yes': yes['yes'] + 1})
         y1 = yes['yes']
