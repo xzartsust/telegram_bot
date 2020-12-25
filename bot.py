@@ -102,38 +102,70 @@ def callback_inline(call):
     global user_data
 
     if call.data == 'yes':
-        yes.update({'yes': yes['yes'] + 1})
-        y1 = yes['yes']
-        n1 = no['no']
         
-        bot.edit_message_text(
-            chat_id = call.message.chat.id,
-            message_id = call.message.message_id,
-            text = f''' 
+        cursor.execute(f'SELECT user_id_vote_yes FROM public."vote" WHERE user_id_vote = \'{call.message.from_user.id}\';')
+        y = cursor.fetchone()
+        conn.commit()
+        
+        cursor.execute(f'SELECT user_id_vote_no FROM public."vote" WHERE user_id_vote = \'{call.message.from_user.id}\';')
+        n = cursor.fetchone()
+        conn.commit()
+
+
+        if y is None and n is None:
+            yes.update({'yes': yes['yes'] + 1})
+            y1 = yes['yes']
+            n1 = no['no']
+        
+            bot.edit_message_text(
+                chat_id = call.message.chat.id,
+                message_id = call.message.message_id,
+                text = f''' 
         Запрос на вступ в групу від чмиря @{user_data.username}
 
     Поганяло: {user_data.first_name}
 
 На роздуплення 10 хв.''',
-            reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
-        
-
-    elif call.data == 'no':
-        no.update({'no': no['no'] + 1})
-        y2 = yes['yes']
-        n2 = no['no']
-
-        bot.edit_message_text(
-            chat_id = call.message.chat.id,
-            message_id = call.message.message_id,
-            text = f''' 
-        Запрос на вступ в групу від чмиря @{user_data.username}
-
-    Поганяло: {user_data.first_name}
-
-На роздуплення 10 хв.''',
-            reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
+                reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
+            
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES \'{call.message.from_user.id}\';')
+            conn.commit()
+        else:
+            bot.answer_callback_query(call.id, text = 'Ееее, куда нах ти вже проголосував', show_alert = True)
     
+    elif call.data == 'no':
+        
+        cursor.execute(f'SELECT user_id_vote_yes FROM public."vote" WHERE user_id_vote = \'{call.message.from_user.id}\';')
+        y1 = cursor.fetchone()
+        conn.commit()
+        
+        cursor.execute(f'SELECT user_id_vote_no FROM public."vote" WHERE user_id_vote = \'{call.message.from_user.id}\';')
+        n1 = cursor.fetchone()
+        conn.commit()
+        
+        if y1 is None and n1 is None:
+            no.update({'no': no['no'] + 1})
+            y2 = yes['yes']
+            n2 = no['no']
+
+            bot.edit_message_text(
+                chat_id = call.message.chat.id,
+                message_id = call.message.message_id,
+                text = f''' 
+        Запрос на вступ в групу від чмиря @{user_data.username}
+
+    Поганяло: {user_data.first_name}
+
+На роздуплення 10 хв.''',
+                reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
+            
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES \'{call.message.from_user.id}\';')
+            conn.commit()
+
+        else:
+            bot.answer_callback_query(call.id, text = 'Ееее, куда нах ти вже проголосував', show_alert = True)
+
+
     #print('Y', yes)
     #print('N', no)
 
@@ -148,6 +180,9 @@ def check():
             no.clear()
             yes.update({'yes': 0})
             no.update({'no': 0})
+
+            cursor.execute(f'DELETE FROM public."vote";')
+            conn.commit()            
     
         elif yes['yes'] < no['no']:
         
@@ -158,6 +193,9 @@ def check():
             no.clear()
             yes.update({'yes': 0})
             no.update({'no': 0})
+
+            cursor.execute(f'DELETE FROM public."vote";')
+            conn.commit()
     
         elif yes['yes'] == no['no']:
         
@@ -168,6 +206,9 @@ def check():
             no.clear()
             yes.update({'yes': 0})
             no.update({'no': 0})
+
+            cursor.execute(f'DELETE FROM public."vote";')
+            conn.commit()
             
             cursor.execute(f'DELETE FROM public."main_BD" WHERE user_id = \'{user_data.id}\';')
             conn.commit()
