@@ -128,7 +128,7 @@ def callback_inline(call):
 На роздуплення 10 хв.''',
                 reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
             
-            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES \'{call.message.from_user.id}\';')
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES (\'{call.message.from_user.id}\');')
             conn.commit()
         else:
             bot.answer_callback_query(call.id, text = 'Ееее, куда нах ти вже проголосував', show_alert = True)
@@ -159,7 +159,7 @@ def callback_inline(call):
 На роздуплення 10 хв.''',
                 reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
             
-            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES \'{call.message.from_user.id}\';')
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES (\'{call.message.from_user.id}\');')
             conn.commit()
 
         else:
