@@ -89,8 +89,17 @@ def send_request(message):
             
             Timer(600, check).start()
             
+            bot.send_message(618042376, f''' 
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
+
+    Поганяло: {message.from_user.first_name}''')
+
+            bot.send_message(message.chat.id, '''
+            Заявка на вступления была направлена на рассмотрение. Ожидайте!
+            ''')
         else:
             bot.send_message(message.chat.id, '''Ви вже відправили заявку''')
+            bot.send_message(618042376, f''' Питається знову надіслати запрос @{message.from_user.username}''')
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
