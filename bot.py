@@ -77,7 +77,7 @@ def send_request(message):
         userinbd = cursor.fetchone()
         conn.commit()
 
-        text = message.text.split()
+        text = message.text.split(' ')
         l = int(len(text))
         
         if message.chat.id != -1001366701849 and userinbd is None and len(text) != 1:
