@@ -77,7 +77,7 @@ def send_request(message):
         userinbd = cursor.fetchone()
         conn.commit()
 
-        text = message.text.split(' ')
+        text = message.text.split()
         l = int(len(text))
         
         if message.chat.id != -1001366701849 and userinbd is None and len(text) != 1:
@@ -85,7 +85,7 @@ def send_request(message):
         Запрос на вступ в групу від чмиря @{message.from_user.username}
 
     Поганяло: {message.from_user.first_name}
-    Пизданув: {''.join(text[1:l])}
+    Пизданув: {' '.join(text[1:l])}
 
 На роздуплення 10 хв.''', reply_markup = create_button('Хай буде','Пашол нахуй'))
 
@@ -157,7 +157,7 @@ def callback_inline(call):
         Запрос на вступ в групу від чмиря @{user_data.username}
 
     Поганяло: {user_data.first_name}
-    Пизданув: {''.join(text[1:l])}
+    Пизданув: {' '.join(text[1:l])}
 
 На роздуплення 10 хв.''',
                 reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
@@ -211,7 +211,7 @@ def callback_inline(call):
         Запрос на вступ в групу від чмиря @{user_data.username}
 
     Поганяло: {user_data.first_name}
-    Пизданув: {''.join(text[1:l])}
+    Пизданув: {' '.join(text[1:l])}
 
 На роздуплення 10 хв.''',
                 reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
