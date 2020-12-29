@@ -103,7 +103,7 @@ def send_request(message):
             bot.send_message(message.chat.id, '''
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
             ''')
-        elif len(text) == 1:
+        elif len(text) == 1 and userinbd is None:
 
             delete = bot.send_message(-1001366701849, f''' 
         Запрос на вступ в групу від чмиря @{message.from_user.username}
