@@ -42,6 +42,9 @@ def send_welcome(message):
     if message.chat.id != -1001366701849: #поміняти айди чата на той який буде 
         bot.send_message(message.chat.id, '''
         Привет! Напиши команду /request что бы подать заявку на вступления 
+        
+        Також можете після команди /request написати повідомлення яке побачать всі в чаті
+        Приклад: /request прийміть будь ласка!
         ''')
 
 @bot.message_handler(commands = ['admin'])
@@ -72,8 +75,34 @@ def send_request(message):
         userinbd = cursor.fetchone()
         conn.commit()
 
-        #поміняти айди чата на той який буде
-        if message.chat.id != -1001366701849 and userinbd is None:
+        text = message.text.split()
+        l = int(len(text))
+        
+        if message.chat.id != -1001366701849 and userinbd is None and len(text) != 1:
+            delete = bot.send_message(-1001366701849, f''' 
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
+
+    Поганяло: {message.from_user.first_name}
+    Пизданув: {text[1:l]}
+
+На роздуплення 10 хв.''', reply_markup = create_button('Хай буде','Пашол нахуй'))
+
+            bot.send_message(message.chat.id, 'Заявка на вступления была направлена на рассмотрение. Ожидайте!')
+            cursor.execute(f'INSERT INTO public."main_BD"(user_id) VALUES (\'{user_data.id}\');')
+            conn.commit()
+            
+            Timer(600, check).start()
+            
+            bot.send_message(618042376, f''' 
+        Запрос на вступ в групу від чмиря @{message.from_user.username}
+
+    Поганяло: {message.from_user.first_name}''')
+
+            bot.send_message(message.chat.id, '''
+            Заявка на вступления была направлена на рассмотрение. Ожидайте!
+            ''')
+        elif len(text) > 1:
+
             delete = bot.send_message(-1001366701849, f''' 
         Запрос на вступ в групу від чмиря @{message.from_user.username}
 
@@ -88,16 +117,9 @@ def send_request(message):
             conn.commit()
             
             Timer(600, check).start()
-            
-            bot.send_message(618042376, f''' 
-        Запрос на вступ в групу від чмиря @{message.from_user.username}
-
-    Поганяло: {message.from_user.first_name}''')
-
-            bot.send_message(message.chat.id, '''
-            Заявка на вступления была направлена на рассмотрение. Ожидайте!
-            ''')
+        
         else:
+            
             bot.send_message(message.chat.id, '''Ви вже відправили заявку''')
             bot.send_message(618042376, f''' Питається знову надіслати запрос @{message.from_user.username}''')
     
