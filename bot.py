@@ -43,8 +43,8 @@ def send_welcome(message):
         bot.send_message(message.chat.id, '''
         Привет! Напиши команду /request что бы подать заявку на вступления 
         
-        Також можете після команди /request написати повідомлення яке побачать всі в чаті
-        Приклад: /request прийміть будь ласка!
+    Також можете після команди /request написати повідомлення яке побачать всі в чаті
+    Приклад: /request прийміть будь ласка!
         ''')
 
 @bot.message_handler(commands = ['admin'])
@@ -66,6 +66,8 @@ def send_request(message):
     
     global user_data
     global delete
+    global text
+    global l
 
     try:
         
@@ -83,7 +85,7 @@ def send_request(message):
         Запрос на вступ в групу від чмиря @{message.from_user.username}
 
     Поганяло: {message.from_user.first_name}
-    Пизданув: {text[1:l]}
+    Пизданув: {''.join(text[1:l])}
 
 На роздуплення 10 хв.''', reply_markup = create_button('Хай буде','Пашол нахуй'))
 
@@ -101,7 +103,7 @@ def send_request(message):
             bot.send_message(message.chat.id, '''
             Заявка на вступления была направлена на рассмотрение. Ожидайте!
             ''')
-        elif len(text) > 1:
+        elif len(text) == 1:
 
             delete = bot.send_message(-1001366701849, f''' 
         Запрос на вступ в групу від чмиря @{message.from_user.username}
@@ -143,11 +145,32 @@ def callback_inline(call):
         conn.commit()
 
 
-        if y is None and n is None:
+        if y is None and n is None and len(text) != 1:
             yes.update({'yes': yes['yes'] + 1})
             y1 = yes['yes']
             n1 = no['no']
         
+            bot.edit_message_text(
+                chat_id = call.message.chat.id,
+                message_id = call.message.message_id,
+                text = f''' 
+        Запрос на вступ в групу від чмиря @{user_data.username}
+
+    Поганяло: {user_data.first_name}
+    Пизданув: {''.join(text[1:l])}
+
+На роздуплення 10 хв.''',
+                reply_markup = create_button(f'Хай буде {y1}', f'Пашол нахуй {n1}'))
+            
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES (\'{call.from_user.id}\');')
+            conn.commit()
+        
+        elif len(text) == 1:
+
+            yes.update({'yes': yes['yes'] + 1})
+            y1 = yes['yes']
+            n1 = no['no']
+            
             bot.edit_message_text(
                 chat_id = call.message.chat.id,
                 message_id = call.message.message_id,
@@ -161,6 +184,7 @@ def callback_inline(call):
             
             cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES (\'{call.from_user.id}\');')
             conn.commit()
+        
         else:
             bot.answer_callback_query(call.id, text = 'Ееее, куда нах ти вже проголосував', show_alert = True)
     
@@ -174,11 +198,33 @@ def callback_inline(call):
         n1 = cursor.fetchone()
         conn.commit()
         
-        if y1 is None and n1 is None:
+        if y1 is None and n1 is None and len(text) != 1:
+            
             no.update({'no': no['no'] + 1})
             y2 = yes['yes']
             n2 = no['no']
 
+            bot.edit_message_text(
+                chat_id = call.message.chat.id,
+                message_id = call.message.message_id,
+                text = f''' 
+        Запрос на вступ в групу від чмиря @{user_data.username}
+
+    Поганяло: {user_data.first_name}
+    Пизданув: {''.join(text[1:l])}
+
+На роздуплення 10 хв.''',
+                reply_markup = create_button(f'Хай буде {y2}', f'Пашол нахуй {n2}'))
+            
+            cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES (\'{call.from_user.id}\');')
+            conn.commit()
+        
+        elif len(text) == 1:
+            
+            no.update({'no': no['no'] + 1})
+            y2 = yes['yes']
+            n2 = no['no']
+            
             bot.edit_message_text(
                 chat_id = call.message.chat.id,
                 message_id = call.message.message_id,
@@ -192,7 +238,7 @@ def callback_inline(call):
             
             cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES (\'{call.from_user.id}\');')
             conn.commit()
-
+        
         else:
             bot.answer_callback_query(call.id, text = 'Ееее, куда нах ти вже проголосував', show_alert = True)
 
