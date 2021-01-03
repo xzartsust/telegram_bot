@@ -54,7 +54,7 @@ def admin(message):
         print(f'\nMessage.chat: {message.chat}\n')
         print(f'Message: {message}\n')
     else:
-        bot.send_message(message.chat.id, "Эту команду может использовать только создатель")
+        bot.send_message(message.chat.id, 'Эту команду может использовать только создатель')
 
 def create_button(text1, text2):
     button = types.InlineKeyboardMarkup()
@@ -122,8 +122,8 @@ def send_request(message):
         
         else:
             
-            bot.send_message(message.chat.id, '''Ви вже відправили заявку''')
-            bot.send_message(618042376, f''' Питається знову надіслати запрос @{message.from_user.username}''')
+            bot.send_message(message.chat.id, 'Ви вже відправили заявку')
+            bot.send_message(618042376, f'Питається знову надіслати запрос @{message.from_user.username}')
     
     except Exception as e:
         bot.send_message(618042376, f'Ошибка в send_request: {e}')
