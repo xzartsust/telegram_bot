@@ -165,7 +165,7 @@ def callback_inline(call):
             cursor.execute(f'INSERT INTO public."vote" (user_id_vote_yes) VALUES (\'{call.from_user.id}\');')
             conn.commit()
         
-        elif len(text) == 1:
+        elif y is None and n is None and len(text) == 1:
 
             yes.update({'yes': yes['yes'] + 1})
             y1 = yes['yes']
@@ -219,7 +219,7 @@ def callback_inline(call):
             cursor.execute(f'INSERT INTO public."vote" (user_id_vote_no) VALUES (\'{call.from_user.id}\');')
             conn.commit()
         
-        elif len(text) == 1:
+        elif y1 is None and n1 is None and len(text) == 1:
             
             no.update({'no': no['no'] + 1})
             y2 = yes['yes']
